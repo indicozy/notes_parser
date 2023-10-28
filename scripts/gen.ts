@@ -1,7 +1,7 @@
 import parser from "dir-parser";
 import fs from "fs";
 import Graph from "graphology";
-import gexf from "graphology-gexf"
+import gexf from "graphology-gexf";
 
 const LOCATION = "../notes";
 
@@ -22,16 +22,19 @@ const getPath = (file: parser.DirInfo | parser.FileInfo, filter: string) => {
 
 type TConnection = { from: string; to: string };
 
-const parseConnections: (fromPath: string, text: string)=> TConnection[] = (fromPath, text) => {
+const parseConnections: (fromPath: string, text: string) => TConnection[] = (
+  fromPath,
+  text
+) => {
   const linkRegex = /\[\[([^\]]+)\|([^\]]+)\]\]/g;
   const matches = text.matchAll(linkRegex);
 
-  const connections: TConnection[] = []
+  const connections: TConnection[] = [];
   for (const match of matches) {
-    connections.push({from: fromPath, to: match[1] + ".md"})
+    connections.push({ from: fromPath, to: match[1] + ".md" });
   }
 
-  return connections
+  return connections;
 };
 
 const readfile = (path: string) => {
@@ -46,38 +49,44 @@ const parseAndReadFile = (path: string) => {
   return connections;
 };
 
-
 const getConnections = (paths: string[]) => {
   const connections: TConnection[] = [];
   paths.forEach((path) => {
     connections.push(...parseAndReadFile(path));
   });
-  return connections
+  return connections;
 };
 
+const randomGen = () => Math.random() * 10 - 5;
 
-export const getGexf: ()=> Promise<string> = async ()=> {
+export const getGexf: () => Promise<string> = async () => {
+  const data = await parser(LOCATION, {
+    ignores: [".git", ".trash", ".obsidian"],
+    getChildren: true,
+    getFiles: true,
+    dirTree: true,
+  } as parser.Options);
 
-const data = await parser(LOCATION, {
-  ignores: [".git", ".trash", ".obsidian"],
-  getChildren: true,
-  getFiles: true,
-  dirTree: true,
-} as parser.Options)
-
-  const graph = new Graph()
+  const graph = new Graph();
 
   const paths: string[] = getPath(data, "md");
-  paths.forEach(path => {
-    graph.addNode(path) 
+  paths.forEach((path) => {
+    graph.addNode(path, {
+      color: "#ffffff",
+      size: 3,
+      label: path,
+      x: randomGen(),
+      y: randomGen(),
+      z: 0,
+    });
   });
   const connections: TConnection[] = getConnections(paths);
   connections.forEach((connection) => {
-    graph.addEdge(connection.from, connection.to)
-  })
+    graph.addEdge(connection.from, connection.to);
+  });
 
   // TODO customize nodes
   const gexfString = gexf.write(graph);
-  console.log(gexfString)
+  console.log(gexfString);
   return gexfString;
-}
+};
