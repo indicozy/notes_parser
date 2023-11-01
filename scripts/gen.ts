@@ -89,7 +89,7 @@ export const getGexf: () => Promise<string> = async () => {
     if (!graph.hasEdge(connection.from, connection.to)) {
       graph.addEdge(connection.from, connection.to, {
         color: "#ffffff",
-        weight: 1,
+        weight: 3,
       });
     }
   });
