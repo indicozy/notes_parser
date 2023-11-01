@@ -94,8 +94,8 @@ export const getGexf: () => Promise<string> = async () => {
     }
   });
 
-  forceAtlas2(graph, {
-    iterations: 50,
+  forceAtlas2.assign(graph, {
+    iterations: 500,
     settings: {
       adjustSizes: false,
       barnesHutOptimize: true,
