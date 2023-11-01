@@ -71,21 +71,28 @@ export const getGexf: () => Promise<string> = async () => {
 
   const paths: string[] = getPath(data, "md");
   paths.forEach((path) => {
+    // Node customization
     graph.addNode(path, {
       color: "#ffffff",
-      size: 3,
-      label: path,
+      size: 10,
+      label: path.split("/").pop(),
       x: randomGen(),
       y: randomGen(),
       z: 0,
     });
   });
+
   const connections: TConnection[] = getConnections(paths);
   connections.forEach((connection) => {
-    graph.addEdge(connection.from, connection.to);
+    // TODO customize nodes
+	  if (!graph.hasEdge(connection.from, connection.to)) {
+		    graph.addEdge(connection.from, connection.to,{
+      color: "#ffffff",
+
+      });
+	  }
   });
 
-  // TODO customize nodes
   const gexfString = gexf.write(graph);
   console.log(gexfString);
   return gexfString;
