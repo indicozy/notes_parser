@@ -93,9 +93,8 @@ export const getGexf: () => Promise<string> = async () => {
       });
     }
   });
-
   forceAtlas2.assign(graph, {
-    iterations: 500,
+    iterations: 20000,
     settings: {
       adjustSizes: false,
       barnesHutOptimize: true,
@@ -109,6 +108,5 @@ export const getGexf: () => Promise<string> = async () => {
   });
 
   const gexfString = gexf.write(graph);
-  console.log(gexfString);
   return gexfString;
 };
