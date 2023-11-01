@@ -89,12 +89,12 @@ export const getGexf: () => Promise<string> = async () => {
     if (!graph.hasEdge(connection.from, connection.to)) {
       graph.addEdge(connection.from, connection.to, {
         color: "#ffffff",
-        weight: 3,
+        weight: 6,
       });
     }
   });
   forceAtlas2.assign(graph, {
-    iterations: 20000,
+    iterations: 50000,
     settings: {
       adjustSizes: false,
       barnesHutOptimize: true,
