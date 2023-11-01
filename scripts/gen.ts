@@ -2,6 +2,7 @@ import parser from "dir-parser";
 import fs from "fs";
 import Graph from "graphology";
 import gexf from "graphology-gexf";
+import forceAtlas2 from "graphology-layout-forceatlas2";
 
 const LOCATION = "../notes";
 
@@ -74,7 +75,7 @@ export const getGexf: () => Promise<string> = async () => {
     // Node customization
     graph.addNode(path, {
       color: "#ffffff",
-      size: 10,
+      size: 1,
       label: path.split("/").pop(),
       x: randomGen(),
       y: randomGen(),
@@ -85,12 +86,26 @@ export const getGexf: () => Promise<string> = async () => {
   const connections: TConnection[] = getConnections(paths);
   connections.forEach((connection) => {
     // TODO customize nodes
-	  if (!graph.hasEdge(connection.from, connection.to)) {
-		    graph.addEdge(connection.from, connection.to,{
-      color: "#ffffff",
-
+    if (!graph.hasEdge(connection.from, connection.to)) {
+      graph.addEdge(connection.from, connection.to, {
+        color: "#ffffff",
+        weight: 1,
       });
-	  }
+    }
+  });
+
+  forceAtlas2(graph, {
+    iterations: 50,
+    settings: {
+      adjustSizes: false,
+      barnesHutOptimize: true,
+      barnesHutTheta: 1,
+      edgeWeightInfluence: 0, // todo experiment with 1000+ nodes
+      gravity: 0.5,
+      linLogMode: true,
+      outboundAttractionDistribution: true,
+      slowDown: 10,
+    },
   });
 
   const gexfString = gexf.write(graph);

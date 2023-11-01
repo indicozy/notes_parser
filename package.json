@@ -13,6 +13,7 @@
     "dir-parser": "^2.1.8",
     "graphology": "^0.25.4",
     "graphology-gexf": "^0.11.0",
+    "graphology-layout-forceatlas2": "^0.10.1",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
