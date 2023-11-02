@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "upload:staged": "ts-node ./app.ts",
-    "upload:all": "ts-node ./app.ts"
+    "upload:staged": "ts-node ./app.ts --staged",
+    "upload:all": "ts-node ./app.ts --ll"
   },
   "keywords": [],
   "author": "",

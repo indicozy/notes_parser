@@ -25,6 +25,7 @@ const env = getDotenv();
 
 export const uploadDirectlyOne = async (path: string, body: string) => {
   // TODO: test it
+  console.log(path, body);
   const command = new PutObjectCommand({
     Bucket: env.S3_BUCKET,
     Key: path,

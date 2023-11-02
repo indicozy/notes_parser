@@ -1,7 +1,7 @@
 import { type TArg, argArr } from "./types";
 
 export const getArgType = () => {
-  const arg = process.argv.pop();
+  const arg = process.argv.pop()?.replace("--", "");
   if (arg === undefined) {
     throw Error("wat");
   }

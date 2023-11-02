@@ -8,11 +8,10 @@ import {
   findAndUploadRelatedConnections,
   uploadDirectlyMany,
   uploadGexf,
+  uploadSearch,
 } from "./scripts/r2Upload";
 
 const LOCATION = "../notes";
-
-const ENV = getDotenv();
 
 //   await getGexf(LOCATION).then((text) => {
 //     fs.writeFileSync("../notes/nodes.gexf", text);
@@ -28,7 +27,7 @@ const run = async () => {
   await uploadGexf(LOCATION);
 
   // 3. update global search file
-  await genSearch(LOCATION);
+  await uploadSearch(LOCATION);
 
   // 2. get list of files to stage
   const filesToUpload = await getFilesToUpload();
