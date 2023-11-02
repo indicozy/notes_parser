@@ -1,4 +1,4 @@
-import { readfile } from "./getFiles";
+import { readFileWrapper } from "./getFiles";
 import { TConnection } from "./types";
 
 export const attachMdExtension: (texts: string[]) => string[] = (texts) => {
@@ -32,7 +32,7 @@ export const parseAndReadFileBuilder: (
   location: string
 ) => (regex: RegExp) => string[] = (path: string, location: string) => {
   const parseAndReadFile = (regex: RegExp) => {
-    const text = readfile(path, location);
+    const text = readFileWrapper(path, location);
     const connections = parseConnectionsBuilder(text)(regex);
     return connections;
   };

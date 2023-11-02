@@ -8,6 +8,7 @@ export const getDotenv = () => {
     R2_ACCESS_KEY_ID: z.string(),
     R2_SECRET_ACCESS_KEY: z.string(),
     R2_ACCOUNT_ID: z.string(),
+    MARKDOWN_URL: z.string(),
   });
   const res = zEnv.parse(process.env);
   return res;
