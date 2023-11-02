@@ -10,7 +10,6 @@ export const parseConnectionsBuilder: (
 ) => (regex: RegExp) => string[] = (text: string) => {
   const parseConnections = (regex: RegExp) => {
     const matches = text.matchAll(regex);
-    // TODO: refactor
     const connections: string[] = [];
     for (const match of matches) {
       connections.push(match[1]);
@@ -39,17 +38,22 @@ export const parseAndReadFileBuilder: (
   return parseAndReadFile;
 };
 
+export const getConnectionsFromFile: (
+  path: string,
+  location: string,
+  regex: RegExp
+) => TConnection[] = (path, location, regex) =>
+  genConnections(
+    path,
+    attachMdExtension(parseAndReadFileBuilder(path, location)(regex))
+  );
+
 export const getConnectionsFromFiles: (
   paths: string[],
   location: string,
   regex: RegExp
 ) => TConnection[] = (paths, location, regex) => {
   return paths
-    .map((path) =>
-      genConnections(
-        path,
-        attachMdExtension(parseAndReadFileBuilder(path, location)(regex))
-      )
-    )
+    .map((path) => getConnectionsFromFile(path, location, regex))
     .flat();
 };

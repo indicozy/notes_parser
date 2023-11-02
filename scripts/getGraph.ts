@@ -7,7 +7,7 @@ import { edgeConfig, nodeConfig } from "./customization";
 import { linkRegex } from "./regex";
 import { getConnectionsFromFiles } from "./getParser";
 
-const getGraph = async (location: string) => {
+export const getGraph = async (location: string) => {
   const graph = new Graph();
 
   const paths = await getPathAll(location);
@@ -17,7 +17,6 @@ const getGraph = async (location: string) => {
   });
   const connections = getConnectionsFromFiles(paths, location, linkRegex);
   connections.forEach((connection) => {
-    // TODO customize nodes
     if (!graph.hasEdge(connection.from, connection.to)) {
       graph.addEdge(connection.from, connection.to, edgeConfig());
     }
@@ -38,10 +37,14 @@ const getGraph = async (location: string) => {
   return graph;
 };
 
+export const graphToGexf: (graph: Graph) => string = (graph) => {
+  const gexfString = gexf.write(graph);
+  return gexfString;
+};
+
 export const getGexf: (location: string) => Promise<string> = async (
   location
 ) => {
   const graph = await getGraph(location);
-  const gexfString = gexf.write(graph);
-  return gexfString;
+  return graphToGexf(graph);
 };

@@ -5,6 +5,7 @@ import { getDotenv } from "./scripts/getEnv";
 import { getFilesToUpload, getStagedFiles } from "./scripts/getStagedFiles";
 import {
   convertAndUploadMarkdownMany,
+  findAndUploadRelatedConnections,
   uploadDirectlyMany,
   uploadGexf,
 } from "./scripts/r2Upload";
@@ -35,11 +36,11 @@ const run = async () => {
   // 4. convert and upload staged files
   await convertAndUploadMarkdownMany(LOCATION, filesToUpload.md);
 
-  // 5. find all connections to staged nodes and upload
-  findAndUploadRelatedConnections();
+  // 5. find all connections to staged nodes and uploa
+  await findAndUploadRelatedConnections(LOCATION, filesToUpload.md);
 
   // 6. upload non-md staged files
-  await uploadDirectlyMany(filesToUpload.nonMd);
+  await uploadDirectlyMany(filesToUpload.nonMd, LOCATION);
 };
 
 run();
