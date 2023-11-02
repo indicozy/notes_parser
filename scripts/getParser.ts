@@ -1,6 +1,10 @@
 import { readfile } from "./getFiles";
 import { TConnection } from "./types";
 
+export const attachMdExtension: (texts: string[]) => string[] = (texts) => {
+  return texts.map((text) => text + ".md");
+};
+
 export const parseConnectionsBuilder: (
   text: string
 ) => (regex: RegExp) => string[] = (text: string) => {
@@ -9,7 +13,7 @@ export const parseConnectionsBuilder: (
     // TODO: refactor
     const connections: string[] = [];
     for (const match of matches) {
-      connections.push(match[1] + ".md");
+      connections.push(match[1]);
     }
     return connections;
   };
@@ -42,7 +46,10 @@ export const getConnectionsFromFiles: (
 ) => TConnection[] = (paths, location, regex) => {
   return paths
     .map((path) =>
-      genConnections(path, parseAndReadFileBuilder(path, location)(regex))
+      genConnections(
+        path,
+        attachMdExtension(parseAndReadFileBuilder(path, location)(regex))
+      )
     )
     .flat();
 };
