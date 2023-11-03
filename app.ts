@@ -1,8 +1,5 @@
-import fs from "fs";
-import { getGexf } from "./scripts/getGraph";
-import { genSearch, genSearchString } from "./scripts/getSearch";
-import { getDotenv } from "./scripts/getEnv";
-import { getFilesToUpload, getStagedFiles } from "./scripts/getStagedFiles";
+import { getFilesToUpload } from "./scripts/getStagedFiles";
+import "@total-typescript/ts-reset";
 import {
   convertAndUploadMarkdownMany,
   findAndUploadRelatedConnections,
@@ -14,17 +11,18 @@ import {
 const LOCATION = "../notes";
 
 const run = async () => {
-  // 1 update global gexf file
-  await uploadGexf(LOCATION);
+  // // 1 update global gexf file
+  // await uploadGexf(LOCATION);
 
-  // 3. update global search file
-  await uploadSearch(LOCATION);
+  // // 3. update global search file
+  // await uploadSearch(LOCATION);
 
   // 2. get list of files to stage
   const filesToUpload = await getFilesToUpload();
+  console.log(filesToUpload);
 
   // 4. convert and upload staged md files
-  await convertAndUploadMarkdownMany(LOCATION, filesToUpload.md);
+  // await convertAndUploadMarkdownMany(LOCATION, filesToUpload.md);
 
   // // 5. find all connections to staged nodes and upload
   // await findAndUploadRelatedConnections(LOCATION, filesToUpload.md);

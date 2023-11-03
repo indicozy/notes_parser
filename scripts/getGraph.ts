@@ -15,7 +15,7 @@ export const getGraph = async (location: string) => {
     // Node customization
     graph.addNode(path, nodeConfig(path));
   });
-  const connections = getConnectionsFromFiles(paths, location, linkRegex);
+  const connections = await getConnectionsFromFiles(paths, location, linkRegex);
   connections.forEach((connection) => {
     if (!graph.hasEdge(connection.from, connection.to)) {
       graph.addEdge(connection.from, connection.to, edgeConfig());

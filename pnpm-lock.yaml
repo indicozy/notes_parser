@@ -17,6 +17,9 @@ dependencies:
   '@supercharge/promise-pool':
     specifier: ^3.1.0
     version: 3.1.0
+  '@total-typescript/ts-reset':
+    specifier: ^0.5.1
+    version: 0.5.1
   aws-sdk:
     specifier: ^2.1487.0
     version: 2.1487.0
@@ -1146,6 +1149,10 @@ packages:
   /@supercharge/promise-pool@3.1.0:
     resolution: {integrity: sha512-gB3NukbIcYzRtPoE6dx9svQYPodxvnfQlaaQd8N/z87E6WaMfRE7o5HwB+LZ+KeM0nsNAq1n4TmBtfz1VCUR+Q==}
     engines: {node: '>=8'}
+    dev: false
+
+  /@total-typescript/ts-reset@0.5.1:
+    resolution: {integrity: sha512-AqlrT8YA1o7Ff5wPfMOL0pvL+1X+sw60NN6CcOCqs658emD6RfiXhF7Gu9QcfKBH7ELY2nInLhKSCWVoNL70MQ==}
     dev: false
 
   /@tsconfig/node10@1.0.9:

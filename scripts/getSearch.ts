@@ -1,4 +1,7 @@
-import { getConnectionsFromFiles, parseAndReadFileBuilder } from "./getParser";
+import {
+  getConnectionsFromFiles,
+  parseConnectionFromFileBuilder,
+} from "./getParser";
 import { getPathAll } from "./getPath";
 import { headersRegex } from "./regex";
 
@@ -10,10 +13,15 @@ export const genSearch: (location: string) => Promise<TSearchNode[]> = async (
   location: string
 ) => {
   const paths = await getPathAll(location);
-  const matches = paths.map(async (path) => ({
-    url: path,
-    headers: await parseAndReadFileBuilder(path, location)(headersRegex),
-  }));
+  const matches = await Promise.all(
+    paths.map(async (path) => ({
+      url: path,
+      headers: await parseConnectionFromFileBuilder(
+        path,
+        location
+      )(headersRegex),
+    }))
+  );
   return matches;
 };
 

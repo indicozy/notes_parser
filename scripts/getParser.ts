@@ -26,7 +26,7 @@ export const genConnections: (
   return connections.map((connection) => ({ from: path, to: connection }));
 };
 
-export const parseAndReadFileBuilder: (
+export const parseConnectionFromFileBuilder: (
   path: string,
   location: string
 ) => (regex: RegExp) => Promise<string[]> = (
@@ -34,7 +34,8 @@ export const parseAndReadFileBuilder: (
   location: string
 ) => {
   const parseAndReadFile = async (regex: RegExp) => {
-    const text: string = await readFileWrapper(path, location);
+    console.log(path, location);
+    const text: string = (await readFileWrapper(path, location)).toString();
     const connections = parseConnectionsBuilder(text)(regex);
     return connections;
   };
@@ -45,18 +46,20 @@ export const getConnectionsFromFile: (
   path: string,
   location: string,
   regex: RegExp
-) => TConnection[] = (path, location, regex) =>
+) => Promise<TConnection[]> = async (path, location, regex) =>
   genConnections(
     path,
-    attachMdExtension(parseAndReadFileBuilder(path, location)(regex))
+    attachMdExtension(
+      await parseConnectionFromFileBuilder(path, location)(regex)
+    )
   );
 
 export const getConnectionsFromFiles: (
   paths: string[],
   location: string,
   regex: RegExp
-) => TConnection[] = (paths, location, regex) => {
-  return paths
-    .map((path) => getConnectionsFromFile(path, location, regex))
-    .flat();
+) => Promise<TConnection[]> = (paths, location, regex) => {
+  return Promise.all(
+    paths.map((path) => getConnectionsFromFile(path, location, regex))
+  ).then((res) => res.flat());
 };

@@ -22,8 +22,6 @@ const resizeImage = async (str: string) => {
   await sharp(str).webp({ quality: 75 }).toBuffer();
 };
 
-type uploadType = "md" | "graph" | "normal";
-
 export const uploadDirectlyOne = async (path: string, body: string) => {
   // TODO: test it
   const buf = Buffer.from(body, "utf8");
@@ -103,7 +101,7 @@ export const uploadRelatedConnectionOne = async (
   location: string,
   path: string
 ) => {
-  const connections = getConnectionsFromFile(path, location, linkRegex);
+  const connections = await getConnectionsFromFile(path, location, linkRegex);
   const pathsAffected = getUniqueStrings(connections.map(({ to }) => to));
   const graph = new Graph();
 
@@ -124,7 +122,7 @@ export const findAndUploadRelatedConnections = async (
   location: string,
   paths: string[]
 ) => {
-  const connections = getConnectionsFromFiles(paths, location, linkRegex);
+  const connections = await getConnectionsFromFiles(paths, location, linkRegex);
   const pathsAffected = getUniqueStrings(connections.map(({ to }) => to));
   const { results } = await PromisePool.withConcurrency(CONCURRENCY_RATE)
     .for(pathsAffected)
