@@ -12,7 +12,7 @@ import Graph from "graphology";
 import { edgeConfig, nodeConfig } from "./customization";
 import sharp from "sharp";
 
-const CONCURRENCY_RATE = 10;
+const CONCURRENCY_RATE = 3;
 
 const s3Client = getS3Client();
 const env = getDotenv();
@@ -23,7 +23,8 @@ const resizeImage = async (str: string) => {
 };
 
 export const uploadDirectlyOne = async (path: string, body: string) => {
-  // TODO: test it
+  // console.log("UPLOADING", path);
+  // return "OK";
   const buf = Buffer.from(body, "utf8");
 
   const options = {
@@ -38,6 +39,7 @@ export const uploadDirectlyOne = async (path: string, body: string) => {
   const params = {
     Bucket: env.S3_BUCKET,
   };
+  console.log("/" + path);
 
   try {
     await s3Client
@@ -56,7 +58,7 @@ export const uploadDirectlyMany = async (paths: string[], location: string) => {
     .for(paths)
     .process(async (path) => {
       const file = (await readFileWrapper(path, location)).toString();
-      return uploadDirectlyOne(location + path, file);
+      return uploadDirectlyOne(path, file);
     });
 
   return results;
@@ -77,7 +79,10 @@ export const convertAndUploadMarkdownOne = async (
   path: string
 ) => {
   console.log("BRUH", `markdown/${path}`);
-  const text = (await readFileWrapper(location, path)).toString();
+  const buffer = await readFileWrapper(location, path);
+  const text = buffer.toString();
+  // TODO: Error here
+  throw Error("text");
   console.log(`markdown/${path}`, text);
   const html = convertMarkdownToHtml(text);
   await uploadDirectlyOne(`markdown/${path}`, html);

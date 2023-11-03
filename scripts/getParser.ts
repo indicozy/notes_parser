@@ -34,7 +34,8 @@ export const parseConnectionFromFileBuilder: (
   location: string
 ) => {
   const parseAndReadFile = async (regex: RegExp) => {
-    console.log(path, location);
+    // console.log(path, location);
+    // NOTE: maybe buggy here
     const text: string = (await readFileWrapper(path, location)).toString();
     const connections = parseConnectionsBuilder(text)(regex);
     return connections;

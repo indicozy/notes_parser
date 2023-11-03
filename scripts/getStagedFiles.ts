@@ -1,12 +1,6 @@
 import util from "util";
-import { getDotenv } from "./getEnv";
 import { getArgType } from "./getArgs";
-import {
-  fileArrToFilesStaged,
-  getFileExtension,
-  getPathAll,
-  getPathAllStructured,
-} from "./getPath";
+import { fileArrToFilesStaged, getPathAllStructured } from "./getPath";
 
 const exec = util.promisify(require("child_process").exec);
 const command = (location: string) =>

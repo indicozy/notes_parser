@@ -9,21 +9,21 @@ import fs from "fs";
 type TCallback = (data: Buffer) => void;
 type TFunc = { callback: TCallback; path: string };
 
-// It's overengineered a bit because it worked fine without it.
 const queue: TFunc[] = [];
-const run: (path: string, callback: TCallback) => Promise<Buffer> = (
-  path,
-  callback
-) =>
-  new Promise((resolve) => {
-    fs.readFile(path, (err, data) => {
-      const n = queue.shift();
-      if (n !== undefined) {
-        run(n.path, n.callback);
-      }
-      resolve(data);
-    });
+let isRunnning: boolean = false;
+const run: (path: string, callback: TCallback) => void = (path, callback) => {
+  isRunnning = true;
+  fs.readFile(path, (_, data) => {
+    callback(data);
+
+    const n = queue.shift();
+    if (n !== undefined) {
+      run(n.path, n.callback);
+    } else {
+      isRunnning = false;
+    }
   });
+};
 
 export const readFileWrapper: (
   path: string,
@@ -34,15 +34,14 @@ export const readFileWrapper: (
     const callback = (data: Buffer) => {
       resolve(data);
     };
-    if (queue.length === 0) {
-      run(pathFinal, callback);
-    } else {
+    if (isRunnning) {
       queue.push({ callback, path: pathFinal });
+    } else {
+      run(pathFinal, callback);
     }
   });
 
 // I don't need that, but I spent too much effort to do that so I'm not deleting it
-// Upd: Ah, I needed it
 export const funcAsyncOneByOne = async <T extends any[], F>(
   func: (...args: T) => Promise<F>,
   args: T[]

@@ -9,7 +9,7 @@ export const nodeConfig = (path: string) => ({
   color: "#ffffff",
   size: 1,
   // https://flexiple.com/javascript/get-last-array-element-javascript
-  label: path.split("/").pop(),
+  label: path.split("/")[path.split("/").length - 1],
   x: randomGen(),
   y: randomGen(),
   z: 0,

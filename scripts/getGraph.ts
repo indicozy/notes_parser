@@ -1,6 +1,6 @@
 import Graph from "graphology";
 import gexf from "graphology-gexf";
-import { getPathAll } from "./getPath";
+import { getPathAll, pathFilter } from "./getPath";
 import { randomGen } from "./getRandom";
 import forceAtlas2 from "graphology-layout-forceatlas2";
 import { edgeConfig, nodeConfig } from "./customization";
@@ -10,7 +10,7 @@ import { getConnectionsFromFiles } from "./getParser";
 export const getGraph = async (location: string) => {
   const graph = new Graph();
 
-  const paths = await getPathAll(location);
+  const paths = pathFilter(await getPathAll(location), "md");
   paths.forEach((path) => {
     // Node customization
     graph.addNode(path, nodeConfig(path));

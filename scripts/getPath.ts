@@ -4,23 +4,33 @@ import { TFilesStaged } from "./getStagedFiles";
 export const getFileExtension = (file: string) =>
   file.split(".")[file.split(".").length - 1];
 
-const findPathsFromTree = (
-  file: parser.DirInfo | parser.FileInfo,
-  filters: string[]
-) => {
+const ignoredFiles = [".git", ".trash", ".obsidian"];
+
+const findPathsFromTree = (file: parser.DirInfo | parser.FileInfo) => {
   const arr: string[] = [];
+  // if (ignoredFiles.includes(file.name)) {
+  //   return [];
+  // }
   if (file.type === "directory") {
+    if (file.path === ".") {
+      return [];
+    }
+    if (file.children.length === 0) {
+      return [];
+    }
     for (const childFile of file.children) {
-      const childPath = findPathsFromTree(childFile, filters);
+      const childPath = findPathsFromTree(childFile);
       arr.push(...childPath);
     }
   }
-  const fileExtension = getFileExtension(file.absPath);
 
-  if (!filters.includes(fileExtension)) {
-    return arr;
+  // NOTE: filter by file
+  // const fileExtension = getFileExtension(file.absPath);
+
+  if (file.type === "file") {
+    arr.push(file.path);
   }
-  arr.push(file.path);
+
   return arr;
 };
 
@@ -39,12 +49,11 @@ export const fileArrToFilesStaged: (stagedFiles: string[]) => TFilesStaged = (
   return stagedFilesObj;
 };
 
-export const findPathsFromTreeFiltered = (
+export const findPathsFromTreeWrapper = (
   file: parser.DirInfo | parser.FileInfo,
-  filters: string[],
   location: string
 ) => {
-  const pathAbsolute = findPathsFromTree(file, filters);
+  const pathAbsolute = findPathsFromTree(file);
   return pathAbsolute.map((path) => path.replace(location + "/", ""));
 };
 
@@ -52,14 +61,15 @@ export const getPathAll: (location: string) => Promise<string[]> = async (
   location
 ) => {
   const data = await parser(location, {
-    // TODO: filters not working
-    ignores: [".git", ".trash", ".obsidian"],
+    // NOTe: filters not working
+    excludes: ignoredFiles,
     getChildren: true,
     getFiles: true,
     dirTree: true,
   } as parser.Options);
 
-  const paths: string[] = findPathsFromTreeFiltered(data, ["md"], location);
+  const paths: string[] = findPathsFromTreeWrapper(data, location);
+  console.log(JSON.stringify(paths, null, 2));
   return paths;
 };
 
@@ -68,4 +78,10 @@ export const getPathAllStructured: (
 ) => Promise<TFilesStaged> = async (location) => {
   const paths = await getPathAll(location);
   return fileArrToFilesStaged(paths);
+};
+
+export const pathFilter = (paths: string[], extension: string) => {
+  return paths.filter(
+    (path) => path.split(".")[path.split(".").length - 1] === extension
+  );
 };

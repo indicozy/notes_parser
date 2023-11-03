@@ -2,7 +2,7 @@ import {
   getConnectionsFromFiles,
   parseConnectionFromFileBuilder,
 } from "./getParser";
-import { getPathAll } from "./getPath";
+import { getPathAll, pathFilter } from "./getPath";
 import { headersRegex } from "./regex";
 
 type TSearchNode = {
@@ -12,7 +12,7 @@ type TSearchNode = {
 export const genSearch: (location: string) => Promise<TSearchNode[]> = async (
   location: string
 ) => {
-  const paths = await getPathAll(location);
+  const paths = pathFilter(await getPathAll(location), "md");
   const matches = await Promise.all(
     paths.map(async (path) => ({
       url: path,
