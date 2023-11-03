@@ -10,9 +10,9 @@ export const genSearch: (location: string) => Promise<TSearchNode[]> = async (
   location: string
 ) => {
   const paths = await getPathAll(location);
-  const matches = paths.map((path) => ({
+  const matches = paths.map(async (path) => ({
     url: path,
-    headers: parseAndReadFileBuilder(path, location)(headersRegex),
+    headers: await parseAndReadFileBuilder(path, location)(headersRegex),
   }));
   return matches;
 };

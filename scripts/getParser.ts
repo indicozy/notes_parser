@@ -29,9 +29,12 @@ export const genConnections: (
 export const parseAndReadFileBuilder: (
   path: string,
   location: string
-) => (regex: RegExp) => string[] = (path: string, location: string) => {
-  const parseAndReadFile = (regex: RegExp) => {
-    const text: string = readFileWrapper(path, location);
+) => (regex: RegExp) => Promise<string[]> = (
+  path: string,
+  location: string
+) => {
+  const parseAndReadFile = async (regex: RegExp) => {
+    const text: string = await readFileWrapper(path, location);
     const connections = parseConnectionsBuilder(text)(regex);
     return connections;
   };

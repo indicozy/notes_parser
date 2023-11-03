@@ -56,8 +56,8 @@ export const uploadDirectlyMany = async (paths: string[], location: string) => {
   // TODO: improve it by making it generic
   const { results } = await PromisePool.withConcurrency(CONCURRENCY_RATE)
     .for(paths)
-    .process((path) => {
-      const file = readFileWrapper(path, location);
+    .process(async (path) => {
+      const file = (await readFileWrapper(path, location)).toString();
       return uploadDirectlyOne(location + path, file);
     });
 
@@ -79,7 +79,7 @@ export const convertAndUploadMarkdownOne = async (
   path: string
 ) => {
   console.log("BRUH", `markdown/${path}`);
-  const text = readFileWrapper(location, path);
+  const text = (await readFileWrapper(location, path)).toString();
   console.log(`markdown/${path}`, text);
   const html = convertMarkdownToHtml(text);
   await uploadDirectlyOne(`markdown/${path}`, html);
