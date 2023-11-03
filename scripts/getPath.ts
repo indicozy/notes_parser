@@ -59,7 +59,6 @@ export const getPathAll: (location: string) => Promise<string[]> = async (
     dirTree: true,
   } as parser.Options);
 
-  console.log(data);
   const paths: string[] = findPathsFromTreeFiltered(data, ["md"], location);
   return paths;
 };

@@ -13,15 +13,6 @@ import {
 
 const LOCATION = "../notes";
 
-//   await getGexf(LOCATION).then((text) => {
-//     fs.writeFileSync("../notes/nodes.gexf", text);
-//   });
-
-//   // 3. update global search file
-//   await genSearch(LOCATION).then((text) => {
-//     fs.writeFileSync("../notes/search.json", genSearchString(text));
-//   });
-
 const run = async () => {
   // 1 update global gexf file
   await uploadGexf(LOCATION);
@@ -32,14 +23,14 @@ const run = async () => {
   // 2. get list of files to stage
   const filesToUpload = await getFilesToUpload();
 
-  // 4. convert and upload staged files
+  // 4. convert and upload staged md files
   await convertAndUploadMarkdownMany(LOCATION, filesToUpload.md);
 
-  // 5. find all connections to staged nodes and uploa
-  await findAndUploadRelatedConnections(LOCATION, filesToUpload.md);
+  // // 5. find all connections to staged nodes and upload
+  // await findAndUploadRelatedConnections(LOCATION, filesToUpload.md);
 
-  // 6. upload non-md staged files
-  await uploadDirectlyMany(filesToUpload.nonMd, LOCATION);
+  // // 6. upload non-md staged files
+  // await uploadDirectlyMany(filesToUpload.nonMd, LOCATION);
 };
 
 run();

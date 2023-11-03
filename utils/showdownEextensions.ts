@@ -13,10 +13,7 @@ export const myextPhoto = {
     const linkRegex = /!\[\[([^\]]+)\]\]/g;
 
     // Replace Markdown links with HTML <a> tags
-    const htmlText = markdownText.replace(
-      linkRegex,
-      `<image src="${env.MARKDOWN_URL}/$1"/>`
-    );
+    const htmlText = markdownText.replace(linkRegex, `<image src="/$1"/>`);
     return htmlText;
   },
 };

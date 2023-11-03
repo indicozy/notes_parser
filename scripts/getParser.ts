@@ -31,7 +31,7 @@ export const parseAndReadFileBuilder: (
   location: string
 ) => (regex: RegExp) => string[] = (path: string, location: string) => {
   const parseAndReadFile = (regex: RegExp) => {
-    const text = readFileWrapper(path, location);
+    const text: string = readFileWrapper(path, location);
     const connections = parseConnectionsBuilder(text)(regex);
     return connections;
   };
