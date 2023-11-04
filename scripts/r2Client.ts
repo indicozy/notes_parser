@@ -1,4 +1,3 @@
-import { S3Client } from "@aws-sdk/client-s3";
 import { getDotenv } from "./getEnv";
 import AWS from "aws-sdk";
 

@@ -11,6 +11,9 @@ import { linkRegex } from "./regex";
 import Graph from "graphology";
 import { edgeConfig, nodeConfig } from "./customization";
 import sharp from "sharp";
+// @ts-ignore
+import mimetype from "mime-types";
+import { getFileExtension } from "./getPath";
 
 const CONCURRENCY_RATE = 3;
 
@@ -22,10 +25,9 @@ const resizeImage = async (str: string) => {
   await sharp(str).webp({ quality: 75 }).toBuffer();
 };
 
-export const uploadDirectlyOne = async (path: string, body: string) => {
+export const uploadDirectlyOne = async (path: string, body: Buffer) => {
   // console.log("UPLOADING", path);
   // return "OK";
-  const buf = Buffer.from(body, "utf8");
 
   const options = {
     partSize: 10 * 1024 * 1024,
@@ -39,13 +41,26 @@ export const uploadDirectlyOne = async (path: string, body: string) => {
   const params = {
     Bucket: env.S3_BUCKET,
   };
-  console.log("TO UPLOAD:", "/" + path);
+  // console.log("TO UPLOAD:", "/" + path);
+  console.log(path.split("/")[path.split("/").length - 1]);
+  const mimetype1 =
+    mimetype.contentType(path.split("/")[path.split("/").length - 1]) ||
+    "text/plain";
+  console.log(mimetype1);
 
   try {
     await s3Client
-      .upload({ ...params, ...fileParameters, Body: buf }, options)
+      .upload(
+        {
+          ...params,
+          ...fileParameters,
+          Body: body,
+          ContentType: mimetype1,
+        },
+        options
+      )
       .promise();
-    console.log("uploaded:", path);
+    // console.log("uploaded:", path);
   } catch (err) {
     console.error(err);
     throw err;
@@ -60,7 +75,7 @@ export const uploadDirectlyMany = async (
   const { results } = await PromisePool.withConcurrency(CONCURRENCY_RATE)
     .for(paths)
     .process(async (path) => {
-      const file = (await readFileWrapper(path.from, location)).toString();
+      const file = await readFileWrapper(path.from, location);
       return uploadDirectlyOne(path.to, file);
     });
 
@@ -69,12 +84,14 @@ export const uploadDirectlyMany = async (
 
 export const uploadGexf = async (rootPath: string) => {
   const text = await getGexf(rootPath);
-  await uploadDirectlyOne("graph.gexf", text);
+  const buffer = Buffer.from(text);
+  await uploadDirectlyOne("graph.gexf", buffer);
 };
 
 export const uploadSearch = async (rootPath: string) => {
   const text = genSearchString(await genSearch(rootPath));
-  await uploadDirectlyOne("search.json", text);
+  const buffer = Buffer.from(text);
+  await uploadDirectlyOne("search.json", buffer);
 };
 
 // It's just more debuggable
@@ -83,7 +100,10 @@ export const convertAndUploadMarkdownOne = (location: string, path: string) =>
     readFileWrapper(path, location).then((buffer) => {
       const text = buffer.toString();
       const html = convertMarkdownToHtml(text);
-      uploadDirectlyOne(`markdown/${path}`, html).then((data) => resolve(null));
+      const bufferHtml = Buffer.from(html);
+      uploadDirectlyOne(`markdown/${path}`, bufferHtml).then((data) =>
+        resolve(null)
+      );
     });
   });
 
@@ -119,7 +139,8 @@ export const uploadRelatedConnectionOne = async (
     }
   });
   const gexf = graphToGexf(graph);
-  await uploadDirectlyOne(`graph/${path}`, gexf);
+  const buffer = Buffer.from(gexf);
+  await uploadDirectlyOne(`graph/${path}`, buffer);
 };
 
 export const findAndUploadRelatedConnections = async (
