@@ -22,7 +22,8 @@ const s3Client = getS3Client();
 const env = getDotenv();
 
 const resizeImage = async (buffer: Buffer) => {
-  return await sharp(buffer).resize(1080, 1080, { fit: "inside" }).toBuffer();
+  console.log("resizing");
+  return await sharp(buffer).resize(1080, 1080, { fit: "outside" }).toBuffer();
 };
 
 export const uploadDirectlyOne = async (path: string, body: Buffer) => {
