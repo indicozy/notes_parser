@@ -14,7 +14,6 @@ import sharp from "sharp";
 // @ts-ignore
 import mimetype from "mime-types";
 import forceLayout from "graphology-layout-force";
-import { getFileExtension } from "./getPath";
 
 const CONCURRENCY_RATE = 3;
 

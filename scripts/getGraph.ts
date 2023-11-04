@@ -22,7 +22,7 @@ export const getGraph = async (location: string) => {
     }
   });
   forceAtlas2.assign(graph, {
-    iterations: 50000,
+    iterations: 5000,
     settings: {
       adjustSizes: false,
       barnesHutOptimize: true,
