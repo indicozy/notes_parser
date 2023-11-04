@@ -21,6 +21,7 @@
     "dotenv": "^16.3.1",
     "graphology": "^0.25.4",
     "graphology-gexf": "^0.11.0",
+    "graphology-layout-force": "^0.2.4",
     "graphology-layout-forceatlas2": "^0.10.1",
     "mime-types": "^2.1.35",
     "sharp": "^0.32.6",

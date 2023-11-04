@@ -13,6 +13,7 @@ import { edgeConfig, nodeConfig } from "./customization";
 import sharp from "sharp";
 // @ts-ignore
 import mimetype from "mime-types";
+import forceLayout from "graphology-layout-force";
 import { getFileExtension } from "./getPath";
 
 const CONCURRENCY_RATE = 3;
@@ -20,9 +21,8 @@ const CONCURRENCY_RATE = 3;
 const s3Client = getS3Client();
 const env = getDotenv();
 
-const resizeImage = async (str: string) => {
-  // TODO:
-  await sharp(str).webp({ quality: 75 }).toBuffer();
+const resizeImage = async (buffer: Buffer) => {
+  return await sharp(buffer).resize(1080, 1080, { fit: "inside" }).toBuffer();
 };
 
 export const uploadDirectlyOne = async (path: string, body: Buffer) => {
@@ -73,6 +73,11 @@ export const uploadDirectlyMany = async (
     .for(paths)
     .process(async (path) => {
       const file = await readFileWrapper(path.from, location);
+      const fileExtension =
+        path.from.split(".")[path.from.split(".").length - 1];
+      if (["png", "jpeg", "jpg", "webp"].includes(fileExtension)) {
+        return uploadDirectlyOne(path.to, await resizeImage(file));
+      }
       return uploadDirectlyOne(path.to, file);
     });
 
@@ -134,6 +139,8 @@ export const uploadRelatedConnectionOne = async (
       graph.addEdge(path, pathAffected, edgeConfig());
     }
   });
+
+  forceLayout.assign(graph, 3000);
   const gexf = graphToGexf(graph);
   const buffer = Buffer.from(gexf);
   await uploadDirectlyOne(`graph/${path}`, buffer);
