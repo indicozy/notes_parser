@@ -128,7 +128,7 @@ export const uploadRelatedConnectionOne = async (
   graph.addNode(path, nodeConfig(path));
   pathsAffected.forEach((pathAffected) => {
     if (!graph.hasNode(pathAffected)) {
-      graph.addNode(pathAffected, nodeConfig(path));
+      graph.addNode(pathAffected, nodeConfig(pathAffected));
     }
     if (!graph.hasEdge(path, pathAffected)) {
       graph.addEdge(path, pathAffected, edgeConfig());
