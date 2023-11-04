@@ -41,12 +41,9 @@ export const uploadDirectlyOne = async (path: string, body: Buffer) => {
   const params = {
     Bucket: env.S3_BUCKET,
   };
-  // console.log("TO UPLOAD:", "/" + path);
-  console.log(path.split("/")[path.split("/").length - 1]);
   const mimetype1 =
     mimetype.contentType(path.split("/")[path.split("/").length - 1]) ||
     "text/plain";
-  console.log(mimetype1);
 
   try {
     await s3Client
@@ -111,7 +108,6 @@ export const convertAndUploadMarkdownMany = async (
   location: string,
   paths: string[]
 ) => {
-  console.log(paths);
   const { results } = await PromisePool.withConcurrency(CONCURRENCY_RATE)
     .for(paths)
     .process((path) => convertAndUploadMarkdownOne(location, path));

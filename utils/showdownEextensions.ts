@@ -15,7 +15,7 @@ export const myextPhoto = {
     // Replace Markdown links with HTML <a> tags
     const htmlText = markdownText.replace(
       linkRegex,
-      `<image src="${env.R2_PUBLIC_URL}/$1"/>`
+      `<image src="${env.R2_PUBLIC_URL}/markdown/$1"/>`
     );
     return htmlText;
   },
