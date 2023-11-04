@@ -57,7 +57,7 @@ export const uploadDirectlyOne = async (path: string, body: Buffer) => {
         options
       )
       .promise();
-    // console.log("uploaded:", path);
+    console.log("uploaded:", path);
   } catch (err) {
     console.error(err);
     throw err;
