@@ -39,7 +39,7 @@ export const uploadDirectlyOne = async (path: string, body: string) => {
   const params = {
     Bucket: env.S3_BUCKET,
   };
-  console.log("/" + path);
+  console.log("TO UPLOAD:", "/" + path);
 
   try {
     await s3Client
@@ -52,13 +52,16 @@ export const uploadDirectlyOne = async (path: string, body: string) => {
   }
 };
 
-export const uploadDirectlyMany = async (paths: string[], location: string) => {
+export const uploadDirectlyMany = async (
+  paths: { from: string; to: string }[],
+  location: string
+) => {
   // TODO: improve it by making it generic
   const { results } = await PromisePool.withConcurrency(CONCURRENCY_RATE)
     .for(paths)
     .process(async (path) => {
-      const file = (await readFileWrapper(path, location)).toString();
-      return uploadDirectlyOne(path, file);
+      const file = (await readFileWrapper(path.from, location)).toString();
+      return uploadDirectlyOne(path.to, file);
     });
 
   return results;
@@ -74,19 +77,15 @@ export const uploadSearch = async (rootPath: string) => {
   await uploadDirectlyOne("search.json", text);
 };
 
-export const convertAndUploadMarkdownOne = async (
-  location: string,
-  path: string
-) => {
-  console.log("BRUH", `markdown/${path}`);
-  const buffer = await readFileWrapper(location, path);
-  const text = buffer.toString();
-  // TODO: Error here
-  throw Error("text");
-  console.log(`markdown/${path}`, text);
-  const html = convertMarkdownToHtml(text);
-  await uploadDirectlyOne(`markdown/${path}`, html);
-};
+// It's just more debuggable
+export const convertAndUploadMarkdownOne = (location: string, path: string) =>
+  new Promise((resolve) => {
+    readFileWrapper(path, location).then((buffer) => {
+      const text = buffer.toString();
+      const html = convertMarkdownToHtml(text);
+      uploadDirectlyOne(`markdown/${path}`, html).then((data) => resolve(null));
+    });
+  });
 
 export const convertAndUploadMarkdownMany = async (
   location: string,

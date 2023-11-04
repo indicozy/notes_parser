@@ -12,7 +12,7 @@ const LOCATION = "../notes";
 
 const uploadNonMdFiles = (filesToUpload: string[]) => {
   return uploadDirectlyMany(
-    filesToUpload.map((path) => `markdown/${path}`),
+    filesToUpload.map((path) => ({ from: path, to: `markdown/${path}` })),
     LOCATION
   );
 };

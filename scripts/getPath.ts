@@ -69,7 +69,6 @@ export const getPathAll: (location: string) => Promise<string[]> = async (
   } as parser.Options);
 
   const paths: string[] = findPathsFromTreeWrapper(data, location);
-  console.log(JSON.stringify(paths, null, 2));
   return paths;
 };
 

@@ -32,6 +32,9 @@ export const readFileWrapper: (
   new Promise((resolve) => {
     const pathFinal = location + "/" + path;
     const callback = (data: Buffer) => {
+      if (data === undefined) {
+        throw Error(`UNDEFINED: ${pathFinal}`);
+      }
       resolve(data);
     };
     if (isRunnning) {
