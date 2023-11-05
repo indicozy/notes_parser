@@ -57,6 +57,9 @@ export const findPathsFromTreeWrapper = (
   return pathAbsolute.map((path) => path.replace(location + "/", ""));
 };
 
+export const pathFilterEmpty = (paths: string[]) =>
+  paths.filter((path) => path?.length > 0);
+
 export const getPathAll: (location: string) => Promise<string[]> = async (
   location
 ) => {
@@ -69,7 +72,7 @@ export const getPathAll: (location: string) => Promise<string[]> = async (
   } as parser.Options);
 
   const paths: string[] = findPathsFromTreeWrapper(data, location);
-  return paths;
+  return pathFilterEmpty(paths);
 };
 
 export const getPathAllStructured: (

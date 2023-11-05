@@ -1,6 +1,10 @@
 import util from "util";
 import { getArgType } from "./getArgs";
-import { fileArrToFilesStaged, getPathAllStructured } from "./getPath";
+import {
+  fileArrToFilesStaged,
+  getPathAllStructured,
+  pathFilterEmpty,
+} from "./getPath";
 
 const exec = util.promisify(require("child_process").exec);
 const command = (location: string) =>
@@ -27,5 +31,5 @@ export const getFilesToUpload: () => Promise<TFilesStaged> = async () => {
     return getPathAllStructured(PATH);
   }
   const stagedFiles = await getStagedFiles();
-  return fileArrToFilesStaged(stagedFiles);
+  return fileArrToFilesStaged(pathFilterEmpty(stagedFiles));
 };
