@@ -10,10 +10,10 @@ import {
 
 const LOCATION = "../notes";
 
-const uploadNonMdFiles = (filesToUpload: string[]) => {
+const uploadNonMdFiles = (location: string, filesToUpload: string[]) => {
   return uploadDirectlyMany(
     filesToUpload.map((path) => ({ from: path, to: `markdown/${path}` })),
-    LOCATION
+    location
   );
 };
 
@@ -29,13 +29,15 @@ const run = async () => {
   console.log(filesToUpload);
 
   // 4. convert and upload staged md files
-  await convertAndUploadMarkdownMany(LOCATION, filesToUpload.md);
+  // await convertAndUploadMarkdownMany(LOCATION, filesToUpload.md);
+  // no conversion for now
+  await uploadNonMdFiles(LOCATION, filesToUpload.md);
 
   // 5. find all connections to staged nodes and upload
   await findAndUploadRelatedConnections(LOCATION, filesToUpload.md);
 
   // 6. upload non-md staged files
-  await uploadNonMdFiles(filesToUpload.nonMd);
+  await uploadNonMdFiles(LOCATION, filesToUpload.nonMd);
 };
 
 run();
