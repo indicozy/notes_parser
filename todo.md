@@ -1,0 +1,6 @@
+- [ ] Add filesystem support
+- [ ] open random note
+- [ ] Recompile to MD
+  - [ ] Mermaid to svg
+  - [ ] Excalidraw to svg
+  - [ ] Databases to svg
